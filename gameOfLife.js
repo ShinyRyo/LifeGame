@@ -13,6 +13,33 @@ let lastRestart = Date.now();
 window.addEventListener('resize', resizeCanvas, false);
 resizeCanvas(); // 初期ロード時にキャンバスをリサイズ
 
+canvas.addEventListener('click', function(event) {
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;    // キャンバスの実際の幅と表示幅の比率
+    const scaleY = canvas.height / rect.height;  // キャンバスの実際の高さと表示高さの比率
+
+    const x = (event.clientX - rect.left) * scaleX;
+    const y = (event.clientY - rect.top) * scaleY;
+
+    const col = Math.floor(x / resolution);
+    const row = Math.floor(y / resolution);
+
+    // タップまたはクリックされた位置とその周囲に生命を生成
+    for (let i = -2; i <= 2; i++) {
+        for (let j = -2; j <= 2; j++) {
+            if (i === 0 && j === 0) {
+                // 中心点
+                grid[col][row] = 1;
+            } else if (Math.random() < 0.5) {
+                // 周囲のセルにランダムに生命を配置
+                const newCol = (col + i + cols) % cols;
+                const newRow = (row + j + rows) % rows;
+                grid[newCol][newRow] = 1;
+            }
+        }
+    }
+});
+
 const restartButton = document.getElementById('restartButton');
 if (restartButton) {
   restartButton.addEventListener('click', () => {
