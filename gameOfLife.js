@@ -117,3 +117,43 @@ function update() {
   }
 
 update();
+
+function handleCanvasEvent(event) {
+    event.preventDefault(); // デフォルトのタッチ操作（スクロールなど）をキャンセル
+    let clientX, clientY;
+    if (event.type === 'click') {
+        clientX = event.clientX;
+        clientY = event.clientY;
+    } else if (event.type === 'touchstart') {
+        clientX = event.touches[0].clientX; // タッチイベントの座標を取得
+        clientY = event.touches[0].clientY;
+    }
+
+    // 以下の座標変換処理と生命を生成する処理は変更なし
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;    
+    const scaleY = canvas.height / rect.height;  
+
+    const x = (clientX - rect.left) * scaleX;
+    const y = (clientY - rect.top) * scaleY;
+
+    const col = Math.floor(x / resolution);
+    const row = Math.floor(y / resolution);
+
+    // タップまたはクリックされた位置とその周囲に生命を生成
+    for (let i = -2; i <= 2; i++) {
+        for (let j = -2; j <= 2; j++) {
+            if (i === 0 && j === 0) {
+                grid[col][row] = 1;
+            } else if (Math.random() < 0.5) {
+                const newCol = (col + i + cols) % cols;
+                const newRow = (row + j + rows) % rows;
+                grid[newCol][newRow] = 1;
+            }
+        }
+    }
+}
+
+// イベントリスナーを追加する部分
+canvas.addEventListener('click', handleCanvasEvent);
+canvas.addEventListener('touchstart', handleCanvasEvent);
