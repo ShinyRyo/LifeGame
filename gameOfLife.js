@@ -156,4 +156,4 @@ function handleCanvasEvent(event) {
 
 // イベントリスナーを追加する部分
 canvas.addEventListener('click', handleCanvasEvent);
-canvas.addEventListener('touchstart', handleCanvasEvent);
+canvas.addEventListener('touchend', handleCanvasEvent);
